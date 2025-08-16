@@ -1,0 +1,23 @@
+New-Item -ItemType Directory -Path "C:\temp" -ErrorAction SilentlyContinue | Out-Null
+New-Item -ItemType Directory -Path "C:\temp\Standard Logs" -ErrorAction SilentlyContinue | Out-Null
+cd "C:\temp\Standard Logs"
+"Recent Files Dump (Today) `n* >> Recent Dumps.txt"
+Get-ChildItem -Path "C:\Users\$env:username\AppData\Roaming\Microsoft Windows\Recent" -Force -Recurse | Where-Object { $_.CreationTime -gt (Get-Date).AddDays(-1) } | Sort-Object -Property LastWriteTime -Descending >> "Recent Dumps.txt"
+"`nTemp Dump (Today) `n* >> Temp_Dumps.txt"
+Get-ChildItem -Path "C:\Users\$env:username\AppData\Local\Temp" -Force -Recurse | Where-Object { $_.CreationTime -gt (Get-Date).AddDays(-1) } | Sort-Object -Property LastWriteTime -Descending >> "Temp Dumps.txt"
+"`nFiltered Prefetch Dump `n" >> "Prefetch_Dumps.txt"
+Get-ChildItem -Path "C:\Windows\prefetch" -Force -Recurse | Select-String -Pattern "usbdeview", "loader", “chrome”, “setup” >> "Prefetch_Dumps.txt"
+"`nPossible Bypass Prefetch Dump `n* >> Prefetch_Dumps.txt"
+Get-ChildItem -Path "C:\Windows\prefetch" -Force -Recurse | Select-String -Pattern "unins", "cleaner", "DefenderU", "curl", "wmic", "conhost", "pip.exe", "xcopy", "taskkill", "vhd", “chrome”, “setup”, “vds” >> "Prefetch_Dumps.txt"
+"`nPrefetch Dump (Today) `n* >> Prefetch Dumps.txt"
+Get-ChildItem -Path "C:\Windows\prefetch" -Force -Recurse | Where-Object { $_.CreationTime -gt (Get-Date).AddDays(-1) } | Sort-Object -Property LastWriteTime -Descending >> "Prefetch Dumps.txt"
+"`nCurrent List of Drive Letters `n" >> "Systeminfos.txt"
+wmic logicaldisk get caption >> "Systeminfos.txt"
+"`n--- Restart Times of important processes ---`nNo Process above should be restarted after GTA" >> "Systeminfos.txt"
+Get-Process "searchindexer", "carss", "lsass", "explorer", "sgrmbroker", "cmd", "gta5" | Select-Object Name, StartTime | Sort-Object -Property StartTime -Descending >> "Systeminfos.txt"
+"`n-List Recording Software running`n" >> "Systeminfos.txt"
+Get-Process "mirillis", "cap", "playclaw", "XSplit", "Screencast", "cantasia", "datory", "nvcontainer", "obs64", "bdcam", "RadeonSoftware", "Fraps", "CanRecorder", "XSplit.Core", "ShareX", "Action", "lightstream", "streamlabs", "webrtcvad", "openbroadcastsoftware", "novavi.screen.recorder", "icecreamscreenrecorder", "smartpixel", "d3dgear", "gadwinprintscreen", "apowersoftfreescreenrecorder", "bandicamlauncher", "hypercam", "loiloilgamerecorder", "nchexpressions", "captura", "vokoscreenNG", "simple.screen.recorder", "recordsydesktop", "kazam", "gtk-recordmydesktop", "screenstudio", "screenkey", "jupyter-notebook" | Select-Object ProcessName >> "Systeminfos.txt"
+"`n-Systeminfo Dump`n" >> "Systeminfos.txt"
+systeminfo >> "Systeminfos.txt"
+dir "C:\Users\$env:username\AppData\Local\CrashDumps" | Sort-Object -Property LastWriteTime -Descending >> "Crash Dumps.txt"
+dir "C:\ProgramData\Microsoft\Windows\MER\ReportArchive" | Sort-Object -Property LastWriteTime -Descending | Select-Object -Property *
