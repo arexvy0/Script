@@ -1,5 +1,6 @@
 New-Item -ItemType Directory -Path C:\temp | Out-Null
 New-Item -ItemType Directory -Path C:\temp\Reg | Out-Null
+New-Item -ItemType Directory -Path C:\temp\eventlogs | Out-Null
 Set-Location C:\temp\eventlogs\
 
 "`n420: Volume Deleted`n" | Out-File "C_Volumes.txt" -Append
@@ -37,3 +38,4 @@ Get-EventLog -LogName Application -Newest 200 | Where-Object { $_.EventID -eq 10
 "`n3079: The read journal was cleared`n" | Out-File "EC_Journal.txt" -Append
 Get-EventLog -LogName Application | Where-Object { $_.EventID -eq 3079 } |
     Select-Object TimeWritten, EntryType, EventID, Message | Out-File "EC_Journal.txt" -Append
+
